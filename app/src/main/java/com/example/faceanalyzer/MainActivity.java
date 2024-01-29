@@ -1,5 +1,9 @@
 package com.example.faceanalyzer;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
@@ -42,9 +47,24 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 124;
+    //private static final int REQUEST_IMAGE_CAPTURE = 124;
     InputImage inputImage;
     FaceDetector faceDetector;
+
+
+
+
+
+
+    private ActivityResultLauncher<Intent> imageCaptureLauncher;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+
+
+
+
+
 
 
     @Override
@@ -58,26 +78,27 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
+
+
+
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OpenFile();
+                openFile();
+
             }
         });
 
         Toast.makeText(getApplicationContext(), "App is started", Toast.LENGTH_SHORT).show();
     }
 
-    private void OpenFile() {
+    private void openFile() {
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Toast.makeText(getApplicationContext(), "Youre here", Toast.LENGTH_SHORT).show();
-        if (i.resolveActivity(getPackageManager()) != null){
-            Toast.makeText(getApplicationContext(),"And not here", Toast.LENGTH_SHORT).show();
-            startActivityIfNeeded(i , REQUEST_IMAGE_CAPTURE);
-        }else{
-            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "You're here", Toast.LENGTH_SHORT).show();
+            startActivityForResult(i, REQUEST_IMAGE_CAPTURE);
         }
-    }
+        
 
 
     @Override
@@ -88,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = (Bitmap) bundle.get("data");
         FaceDetectionProcess(bitmap);
         Toast.makeText(getApplicationContext(), "Succeed!!", Toast.LENGTH_SHORT).show();
+
     }
 
     private void FaceDetectionProcess(Bitmap bitmap) {
@@ -233,6 +255,6 @@ public class MainActivity extends AppCompatActivity {
             textView.setMovementMethod(new ScrollingMovementMethod());
             textView.append(builder);
         }
-            
+
         }
     }
