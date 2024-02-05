@@ -7,11 +7,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        askPermission();
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +104,25 @@ public class MainActivity extends AppCompatActivity {
         
 
 
+        private void askPermission(){
+            if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, 100);
+            }
+        }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -108,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = data.getExtras();
         Bitmap bitmap = (Bitmap) bundle.get("data");
         FaceDetectionProcess(bitmap);
+        Toast.makeText(this, "MainActivityFirstSavedPoint", Toast.LENGTH_SHORT).show();
         Toast.makeText(getApplicationContext(), "Succeed!!", Toast.LENGTH_SHORT).show();
 
     }
@@ -123,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
                 .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
                 .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
                 .enableTracking().build();
+        Toast.makeText(this, "MainActivitySavedPoint Second", Toast.LENGTH_SHORT).show();
+        btn.setVisibility(View.GONE);
+
 
         FaceDetector detector = FaceDetection.getClient(options);
         Task<List<Face>> result =
@@ -189,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                                             }
 
 
-
                                             // If face tracking was enabled:
                                             if (face.getTrackingId() != null) {
                                                 int id = face.getTrackingId();
@@ -225,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
         if(b == true){
             textView.setText(null);
             textView.setMovementMethod(new ScrollingMovementMethod());
+            Toast.makeText(this, "MainActivitySavedPoint Third", Toast.LENGTH_SHORT).show();
+
 
             if(builder.length() != 0){
                 textView.append(builder);
@@ -255,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setMovementMethod(new ScrollingMovementMethod());
             textView.append(builder);
         }
+        Toast.makeText(this, "MainActivitySavedPoint Fourth", Toast.LENGTH_SHORT).show();
 
-        }
+    }
     }
