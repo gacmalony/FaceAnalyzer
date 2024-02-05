@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FaceAnalyzer</string>
+    <string name="process">Image Uploading...</string>
 </resources>

@@ -1,13 +1,9 @@
 package com.example.faceanalyzer;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.ClipData;
@@ -19,7 +15,6 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.method.ScrollingMovementMethod;
@@ -50,16 +45,12 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
 
-    //private static final int REQUEST_IMAGE_CAPTURE = 124;
-    InputImage inputImage;
-    FaceDetector faceDetector;
 
 
 
 
 
 
-    private ActivityResultLauncher<Intent> imageCaptureLauncher;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -85,13 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         askPermission();
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFile();
-
-            }
-        });
+        btn.setOnClickListener(v -> openFile());
 
         Toast.makeText(getApplicationContext(), "App is started", Toast.LENGTH_SHORT).show();
     }
@@ -126,19 +111,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Bundle bundle = data.getExtras();
-        Bitmap bitmap = (Bitmap) bundle.get("data");
-        FaceDetectionProcess(bitmap);
-        Toast.makeText(this, "MainActivityFirstSavedPoint", Toast.LENGTH_SHORT).show();
+        try{
+            Bundle bundle = data.getExtras();
+            Bitmap bitmap = (Bitmap) bundle.get("data");
+            FaceDetectionProcess(bitmap);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }finally {
+            Toast.makeText(this, "MainActivityFirstSavedPoint", Toast.LENGTH_SHORT).show();
+        }
         Toast.makeText(getApplicationContext(), "Succeed!!", Toast.LENGTH_SHORT).show();
 
     }
 
     private void FaceDetectionProcess(Bitmap bitmap) {
-        textView.setText("Processing image ... ");
+        textView.setText(R.string.process);
         final StringBuilder builder = new StringBuilder();
-        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
         InputImage image = InputImage.fromBitmap(bitmap, 0);
         FaceDetectorOptions options = new FaceDetectorOptions.Builder()
                 .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
