@@ -18,7 +18,7 @@ Currently Im reading a book to match the results correctly :)
 
 
 
-I took my selfie and brought the results 
+I took my selfie and app brought the results 
 
 
 ![WhatsApp Image 2024-02-05 at 14 55 49](https://github.com/gacmalony/FaceAnalyzer/assets/154236584/618fe60f-2d8a-4c6a-83dd-a3f7c70a4bd3)
